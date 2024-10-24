@@ -32,26 +32,10 @@
         android:id="@+id/addTransactionBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Transaction"/>
+        android:text="Add Transaction" />
 
     <!-- New buttons for login and registration -->
-    <Button
-        android:id="@+id/loginBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"/>
-
-    <Button
-        android:id="@+id/registerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"/>
 
     <!-- Logout button -->
-    <Button
-        android:id="@+id/logoutBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"/>
 
 </LinearLayout>

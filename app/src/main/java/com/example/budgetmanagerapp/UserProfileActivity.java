@@ -1,34 +1,31 @@
-import android.content.Intent;
+package com.example.budgetmanagerapp;
+
 import android.os.Bundle;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private TextView profileName, usernameDisplay, firstNameDisplay, lastNameDisplay, dobDisplay;
+    private TextView usernameDisplay, firstNameDisplay, lastNameDisplay, dobDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile); // Ensure this is your display layout XML
+        setContentView(R.layout.user_profile);
 
-        // Initialize the TextViews
-        profileName = findViewById(R.id.profile_name);
+        // Initialize UI elements
         usernameDisplay = findViewById(R.id.username);
-        firstNameDisplay = findViewById(R.id.first_name);
-        lastNameDisplay = findViewById(R.id.last_name);
+        firstNameDisplay = findViewById(R.id.firstName);
+        lastNameDisplay = findViewById(R.id.lastName);
         dobDisplay = findViewById(R.id.dob);
 
-        // Get the data passed from MainActivity
-        Intent intent = getIntent();
-        String username = intent.getStringExtra("USERNAME");
-        String firstName = intent.getStringExtra("FIRST_NAME");
-        String lastName = intent.getStringExtra("LAST_NAME");
-        String dob = intent.getStringExtra("DOB");
+        // Get data passed from ProfileActivity
+        String username = getIntent().getStringExtra("username");
+        String firstName = getIntent().getStringExtra("firstName");
+        String lastName = getIntent().getStringExtra("lastName");
+        String dob = getIntent().getStringExtra("dob");
 
-        // Set the data in the TextViews
-        profileName.setText(firstName + " " + lastName);
+        // Display the profile details
         usernameDisplay.setText(username);
         firstNameDisplay.setText(firstName);
         lastNameDisplay.setText(lastName);

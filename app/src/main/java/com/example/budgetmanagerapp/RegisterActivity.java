@@ -1,5 +1,6 @@
 package com.example.budgetmanagerapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,7 +60,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if (success) {
                         Toast.makeText(RegisterActivity.this, "User registered successfully!", Toast.LENGTH_SHORT).show();
-                        // Optionally navigate to login or another screen
+                        // Navigate to the Profile Update screen
+                        Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                        finish(); // Optionally finish this activity so the user cannot go back here
                     } else {
                         Toast.makeText(RegisterActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
