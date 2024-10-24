@@ -1,0 +1,31 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/gradient_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your total expenses"
+        android:textSize="18sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/totalExpenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RM0.00"
+        android:textSize="24sp"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"/>
+
+    <ListView
+        android:id="@+id/transactionList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:dividerHeight="8dp"/>
+</LinearLayout>

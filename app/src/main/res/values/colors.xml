@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Basic Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Primary Colors -->
+    <color name="primary_color">#6200EE</color> <!-- Purple -->
+    <color name="primary_light">#BB86FC</color> <!-- Light Purple -->
+    <color name="primary_dark">#3700B3</color> <!-- Dark Purple -->
+
+    <!-- Secondary Colors -->
+    <color name="secondary_color">#03DAC5</color> <!-- Teal -->
+    <color name="secondary_light">#66FFF9</color> <!-- Light Teal -->
+    <color name="secondary_dark">#018786</color> <!-- Dark Teal -->
+
+    <!-- Button Colors -->
+    <color name="button_primary">#6200EE</color> <!-- Primary Button Background -->
+    <color name="button_secondary">#03DAC5</color> <!-- Secondary Button Background -->
+    <color name="button_text">#FFFFFFFF</color> <!-- Button Text Color -->
+
+    <!-- Background Colors -->
+    <color name="background_light">#F2F2F2</color> <!-- Light Background -->
+    <color name="background_dark">#121212</color> <!-- Dark Background -->
+
+    <!-- Text Colors -->
+    <color name="text_primary">#FF000000</color> <!-- Primary Text Color -->
+    <color name="text_secondary">#666666</color> <!-- Secondary Text Color -->
+    <color name="text_highlight">#6200EE</color> <!-- Highlighted Text (for links, etc.) -->
+
+    <!-- Error/Alert Colors -->
+    <color name="error_color">#B00020</color> <!-- Error Message Color -->
+    <color name="success_color">#388E3C</color> <!-- Success Message Color -->
+</resources>
