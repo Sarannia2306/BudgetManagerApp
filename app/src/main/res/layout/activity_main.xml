@@ -1,31 +1,57 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/gradient_bg">
+    android:padding="16dp">
 
     <TextView
+        android:id="@+id/totalIncomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your total expenses"
+        android:text="Income: RM0"
         android:textSize="18sp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"/>
+        android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/totalExpenses"
+        android:id="@+id/totalExpenseText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RM0.00"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="8dp"/>
+        android:text="Expense: RM0"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
 
-    <ListView
-        android:id="@+id/transactionList"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/balanceText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:dividerHeight="8dp"/>
+        android:text="Balance: RM0"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/addTransactionBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Transaction"/>
+
+    <!-- New buttons for login and registration -->
+    <Button
+        android:id="@+id/loginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"/>
+
+    <Button
+        android:id="@+id/registerBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"/>
+
+    <!-- Logout button -->
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"/>
+
 </LinearLayout>

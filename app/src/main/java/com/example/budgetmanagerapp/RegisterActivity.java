@@ -1,11 +1,11 @@
 package com.example.budgetmanagerapp;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -21,31 +21,36 @@ import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private static final String REGISTER_URL = "http://YOUR_SERVER_IP/budget_manager/register.php"; // Replace with your server URL
+    private static final String SIGNUP_URL = "http://10.0.2.2:8080/budget_manager/register.php"; // Replace with your actual server URL
 
-    EditText usernameInput, passwordInput;
-    Button registerButton;
+    private EditText emailInput, passwordInput;
+    private Button signUpBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        usernameInput = findViewById(R.id.usernameInput);
+        emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
-        registerButton = findViewById(R.id.registerButton);
+        signUpBtn = findViewById(R.id.signUpBtn);
 
-        registerButton.setOnClickListener(v -> {
-            String username = usernameInput.getText().toString();
+        signUpBtn.setOnClickListener(v -> {
+            String username = emailInput.getText().toString();
             String password = passwordInput.getText().toString();
-            registerUser(username, password);
+
+            if (!username.isEmpty() && !password.isEmpty()) {
+                registerUser(username, password);
+            } else {
+                Toast.makeText(RegisterActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void registerUser(final String username, final String password) {
+    private void registerUser(final String email, final String password) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.Method.POST, REGISTER_URL, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, SIGNUP_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -53,8 +58,8 @@ public class RegisterActivity extends AppCompatActivity {
                     boolean success = jsonObject.getBoolean("success");
 
                     if (success) {
-                        Toast.makeText(RegisterActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-                        finish();  // Close registration activity
+                        Toast.makeText(RegisterActivity.this, "User registered successfully!", Toast.LENGTH_SHORT).show();
+                        // Optionally navigate to login or another screen
                     } else {
                         Toast.makeText(RegisterActivity.this, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
@@ -72,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", username);
+                params.put("email", email); // Update to use email
                 params.put("password", password);
                 return params;
             }
@@ -80,4 +85,5 @@ public class RegisterActivity extends AppCompatActivity {
 
         queue.add(request);
     }
+
 }

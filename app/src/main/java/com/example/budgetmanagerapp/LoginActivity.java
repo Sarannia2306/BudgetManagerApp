@@ -22,28 +22,28 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String LOGIN_URL = "http://YOUR_SERVER_IP/budget_manager/login.php"; // Replace with your server URL
+    private static final String LOGIN_URL = "http://10.0.2.2:8080/budget_manager/login.php"; // Replace with your server URL
 
-    EditText usernameInput, passwordInput;
-    Button loginButton;
+    EditText emailInput, passwordInput;
+    Button signInBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameInput = findViewById(R.id.usernameInput);
+        emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
-        loginButton = findViewById(R.id.loginButton);
+        signInBtn = findViewById(R.id.signInBtn);
 
-        loginButton.setOnClickListener(v -> {
-            String username = usernameInput.getText().toString();
+        signInBtn.setOnClickListener(v -> {
+            String username = emailInput.getText().toString();
             String password = passwordInput.getText().toString();
             loginUser(username, password);
         });
     }
 
-    private void loginUser(final String username, final String password) {
+    private void loginUser(final String email, final String password) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request = new StringRequest(Request.Method.POST, LOGIN_URL, new Response.Listener<String>() {
@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (success) {
                         Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                        // Navigate to MainActivity
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -76,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("username", username);
+                params.put("email", email); // Update to use email
                 params.put("password", password);
                 return params;
             }

@@ -8,6 +8,9 @@
     <color name="primary_color">#6200EE</color> <!-- Purple -->
     <color name="primary_light">#BB86FC</color> <!-- Light Purple -->
     <color name="primary_dark">#3700B3</color> <!-- Dark Purple -->
+    <color name="primary_blue">#2196F3</color> <!-- Example color -->
+    <color name="primary_white">#FFFFFF</color> <!-- Example color -->
+
 
     <!-- Secondary Colors -->
     <color name="secondary_color">#03DAC5</color> <!-- Teal -->
