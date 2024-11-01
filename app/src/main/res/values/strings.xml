@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="app_name">BudgetManager</string>
+
     <!-- Transaction Type Array -->
     <string-array name="transaction_type">
         <item>Income</item>

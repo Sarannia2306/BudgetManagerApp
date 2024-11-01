@@ -1,74 +1,104 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp"
-    android:gravity="center"
-    android:background="@drawable/background_gradient"
-    android:paddingTop="50dp">
+    android:background="@drawable/background_gradient">
 
-    <ImageView
-        android:id="@+id/profileImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/profile_img_bg"
-        android:src="@drawable/baseline_photo" />
-
-    <EditText
-        android:id="@+id/usernameInput"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Username"
-        android:textColorHint="@color/black"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_bg"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp"/>
+        android:layout_height="741dp"
+        android:layout_alignParentStart="true"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/firstNameInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="First Name"
-        android:textColorHint="@color/black"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_bg"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/lastNameInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Last Name"
-        android:textColorHint="@color/black"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_bg"
-        android:textColor="@color/black"
-        android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:fontFamily="@font/chango"
+                android:text="Sign up"
+                android:textColor="@color/yellowish"
+                android:textSize="34sp" />
 
-    <EditText
-        android:id="@+id/dobInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date of Birth (dd-mm-yyyy)"
-        android:textColorHint="@color/black"
-        android:padding="12dp"
-        android:background="@drawable/edit_text_bg"
-        android:textColor="@color/black"
-        android:layout_marginBottom="20dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/completeProfileBtn"
-        android:layout_width="102dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="@color/primary_white"
-        android:padding="12dp"
-        android:text="Complete"
-        android:textColor="@color/primary_blue" />
-</LinearLayout>
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:clickable="true"
+                    android:contentDescription="Profile Image"
+                    android:focusable="true"
+                    android:src="@drawable/baseline_photo" />
+
+                <Button
+                    android:id="@+id/uploadImageBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/yellowish"
+                    android:fontFamily="@font/chango"
+                    android:text="Upload" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/firstNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/edit_text_bg"
+                android:fontFamily="@font/chango"
+                android:hint="First Name"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/yellowish" />
+
+            <EditText
+                android:id="@+id/lastNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/edit_text_bg"
+                android:fontFamily="@font/chango"
+                android:hint="Last Name"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/yellowish" />
+
+            <EditText
+                android:id="@+id/dobInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/edit_text_bg"
+                android:clickable="true"
+                android:focusable="false"
+                android:fontFamily="@font/chango"
+                android:hint="Date of Birth (dd-mm-yyyy)"
+                android:padding="12dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/yellowish" />
+
+            <Button
+                android:id="@+id/saveProfileBtn"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#008B8B"
+                android:fontFamily="@font/chango"
+                android:text="Complete" />
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

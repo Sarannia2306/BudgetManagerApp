@@ -1,23 +1,28 @@
 package com.example.budgetmanagerapp;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,109 +30,196 @@ import java.util.Map;
 
 public class AddTransactionActivity extends AppCompatActivity {
 
-    private static final String INSERT_URL = "http://10.0.2.2:8080/budget_manager/insert_transaction.php";
-
-    EditText amountInput, descriptionInput, dateInput;
-    Spinner typeSpinner, categorySpinner;
-    Button saveButton;
-    Calendar calendar;
+    private EditText amountInput, dateInput, descriptionInput;
+    private Spinner typeSpinner, categorySpinner;
+    private Button saveButton;
+    private DatabaseReference transactionDatabaseRef;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_transaction);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        // Check if user is authenticated
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            // Change the reference to point to the user's Transactions node
+            transactionDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Transactions");
+        } else {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // Initialize UI elements
         amountInput = findViewById(R.id.amountInput);
-        descriptionInput = findViewById(R.id.descriptionInput);
         dateInput = findViewById(R.id.dateInput);
+        descriptionInput = findViewById(R.id.descriptionInput);
         typeSpinner = findViewById(R.id.typeSpinner);
         categorySpinner = findViewById(R.id.categorySpinner);
         saveButton = findViewById(R.id.saveButton);
-        calendar = Calendar.getInstance();
+        ImageView calc_2 = findViewById(R.id.calc_2);
 
-        // Date picker dialog when clicking on the dateInput field
-        dateInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
+        // Save button click listener
+        saveButton.setOnClickListener(v -> saveTransaction());
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(AddTransactionActivity.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                String selectedDate = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
-                                dateInput.setText(selectedDate);
-                            }
-                        }, year, month, day);
-                datePickerDialog.show();
-            }
+        // Calculator icon click listener
+        calc_2.setOnClickListener(v -> {
+            Intent calculatorIntent = new Intent(AddTransactionActivity.this, CalculatorActivity.class);
+            startActivity(calculatorIntent);
         });
 
-        // Save the transaction by sending data to MySQL using Volley
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        // Set up BottomNavigationView for navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+        bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+
+        // Set date input click listener to show date picker
+        dateInput.setOnClickListener(v -> showDatePickerDialog());
+    }
+
+    private void saveTransaction() {
+        String amount = amountInput.getText().toString().trim();
+        String date = dateInput.getText().toString().trim();
+        String description = descriptionInput.getText().toString().trim();
+        String type = typeSpinner.getSelectedItem().toString(); // Income or Expense
+        String category = categorySpinner.getSelectedItem().toString();
+
+        // Validate input
+        if (TextUtils.isEmpty(amount) || TextUtils.isEmpty(date) || TextUtils.isEmpty(description)) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Fetch the last transaction ID
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        DatabaseReference lastIdRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("lastTransactionId");
+
+        lastIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                if (amountInput.getText().toString().isEmpty() || dateInput.getText().toString().isEmpty()) {
-                    Toast.makeText(AddTransactionActivity.this, "Please enter all details", Toast.LENGTH_SHORT).show();
-                    return;
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int lastTransactionId = 0; // Default value
+                if (snapshot.exists()) {
+                    lastTransactionId = snapshot.getValue(Integer.class);
                 }
 
-                // Get the input values
-                final String amount = amountInput.getText().toString();
-                final String type = typeSpinner.getSelectedItem().toString();
-                final String category = categorySpinner.getSelectedItem().toString();
-                final String description = descriptionInput.getText().toString();
-                final String date = dateInput.getText().toString();
+                // Create new transaction ID
+                int newTransactionId = lastTransactionId + 1;
 
-                // Send data to the server
-                sendTransactionToServer(amount, type, category, date, description);
+                // Store transaction data in a map
+                Map<String, Object> transactionData = new HashMap<>();
+                transactionData.put("id", newTransactionId); // Store transaction ID
+                transactionData.put("amount", amount);
+                transactionData.put("date", date);
+                transactionData.put("description", description);
+                transactionData.put("type", type);
+                transactionData.put("category", category);
+
+                // Save transaction data to Firebase under Users/uid/Transactions/newTransactionId
+                DatabaseReference transactionRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Transactions").child(String.valueOf(newTransactionId));
+                transactionRef.setValue(transactionData)
+                        .addOnSuccessListener(aVoid -> {
+                            // Update the lastTransactionId in the database
+                            lastIdRef.setValue(newTransactionId)
+                                    .addOnSuccessListener(aVoid1 -> Log.d("AddTransactionActivity", "Last transaction ID updated successfully"))
+                                    .addOnFailureListener(e -> Log.e("AddTransactionActivity", "Failed to update last transaction ID: " + e.getMessage()));
+                            Toast.makeText(AddTransactionActivity.this, "Transaction added", Toast.LENGTH_SHORT).show();
+                            updateBalance(type, Double.parseDouble(amount)); // Update the balance
+                            clearInputs();
+                        })
+                        .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to add transaction: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTransactionActivity.this, "Failed to fetch last transaction ID", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void sendTransactionToServer(final String amount, final String type, final String category, final String date, final String description) {
-        RequestQueue queue = Volley.newRequestQueue(this);
+    // Method to update the balance
+    private void updateBalance(String type, double amount) {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        StringRequest request = new StringRequest(Request.Method.POST, INSERT_URL, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    boolean success = jsonObject.getBoolean("success");
+        String userId = currentUser.getUid();
+        DatabaseReference balanceRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("balance");
 
-                    if (success) {
-                        Toast.makeText(AddTransactionActivity.this, "Transaction added", Toast.LENGTH_SHORT).show();
-                        finish();  // Return to MainActivity
-                    } else {
-                        Toast.makeText(AddTransactionActivity.this, "Error adding transaction", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(AddTransactionActivity.this, "JSON parsing error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
+        // Update the balance based on the transaction type
+        balanceRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(AddTransactionActivity.this, "Volley error: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                // Send the transaction data as POST parameters
-                Map<String, String> params = new HashMap<>();
-                params.put("amount", amount);
-                params.put("type", type);
-                params.put("category", category);
-                params.put("date", date);
-                params.put("description", description);
-                return params;
-            }
-        };
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                double currentBalance = snapshot.exists() ? snapshot.getValue(Double.class) : 0.0;
+                double newBalance = type.equals("Income") ? currentBalance + amount : currentBalance - amount;
 
-        // Add the request to the queue
-        queue.add(request);
+                // Save the new balance back to the database
+                balanceRef.setValue(newBalance)
+                        .addOnSuccessListener(aVoid -> Log.d("AddTransactionActivity", "Balance updated successfully"))
+                        .addOnFailureListener(e -> Log.e("AddTransactionActivity", "Failed to update balance: " + e.getMessage()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(AddTransactionActivity.this, "Failed to fetch current balance", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void clearInputs() {
+        amountInput.setText("");
+        dateInput.setText("");
+        descriptionInput.setText("");
+        typeSpinner.setSelection(0);
+        categorySpinner.setSelection(0);
+    }
+
+    private boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                // Navigate to HomePageActivity
+                Intent homeIntent = new Intent(AddTransactionActivity.this, HomePageActivity.class);
+                startActivity(homeIntent);
+                return true;
+            case R.id.nav_profile:
+                // Navigate to UserProfileActivity
+                Intent profileIntent = new Intent(AddTransactionActivity.this, UserProfileActivity.class);
+                startActivity(profileIntent);
+                return true;
+            case R.id.nav_transactions:
+                // Stay on AddTransactionActivity
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void showDatePickerDialog() {
+        // Get the current date
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Create and show the DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            // Format the selected date
+            String selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
+            dateInput.setText(selectedDate); // Set the selected date to the EditText
+        }, year, month, day);
+
+        datePickerDialog.show(); // Display the dialog
     }
 }

@@ -7,15 +7,15 @@
                 android:topRightRadius="0dp"
                 android:bottomLeftRadius="100dp"
                 android:bottomRightRadius="100dp"/>
-            <solid android:color="#4D00FF"/>
+            <solid android:color="#78D6ED"/>
         </shape>
     </item>
 
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:startColor="#4D00FF"
-                android:endColor="#4D00FF"
+                android:startColor="#EDA4F2FF"
+                android:endColor="#F0F6AF"
                 android:angle="50"/>
             <corners android:topLeftRadius="0dp"
                 android:topRightRadius="0dp"

@@ -20,20 +20,47 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <ImageView
+            android:id="@+id/calc_2"
+            android:layout_width="47dp"
+            android:layout_height="54dp"
+            android:clickable="true"
+            android:contextClickable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.016"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.007"
+            app:srcCompat="@drawable/calculater_icon" />
+
         <TextView
             android:id="@+id/header_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/bungee_shade"
             android:gravity="center"
             android:text="Add Transaction"
-            android:textColor="@android:color/white"
+            android:textColor="@color/yellowish"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="67dp"
+            android:layout_height="55dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.988"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/logo_budget" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -42,80 +69,101 @@
         android:layout_width="185dp"
         android:layout_height="52dp"
         android:layout_marginTop="24dp"
-        android:background="@drawable/button_white"
+        android:background="@drawable/rounded_edittext"
         android:entries="@array/transaction_type"
         android:padding="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.057"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amountInput" />
+        app:layout_constraintTop_toBottomOf="@+id/amountInput"
+        app:layout_constraintVertical_bias="0.133" />
 
     <Spinner
         android:id="@+id/categorySpinner"
-        android:layout_width="172dp"
+        android:layout_width="185dp"
         android:layout_height="52dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/button_white"
+        android:background="@drawable/rounded_edittext"
         android:entries="@array/transaction_category"
         android:padding="12dp"
         app:layout_constraintBottom_toTopOf="@+id/descriptionInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/typeSpinner" />
+        app:layout_constraintStart_toEndOf="@+id/typeSpinner"
+        app:layout_constraintTop_toBottomOf="@+id/amountInput"
+        app:layout_constraintVertical_bias="1.0" />
+
 
     <EditText
         android:id="@+id/dateInput"
-        android:layout_width="165dp"
+        android:layout_width="178dp"
         android:layout_height="46dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/button_white"
+        android:layout_marginBottom="92dp"
+        android:background="@drawable/rounded_edittext"
         android:focusable="false"
+        android:fontFamily="@font/chango"
         android:hint="Date"
         android:padding="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/categorySpinner"
-        app:layout_constraintStart_toEndOf="@+id/amountInput" />
+        android:textColorHint="@color/yellowish"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/descriptionInput"
         android:layout_width="381dp"
         android:layout_height="47dp"
         android:layout_marginBottom="136dp"
-        android:background="@drawable/button_white"
+        android:background="@drawable/rounded_edittext"
+        android:fontFamily="@font/chango"
         android:hint="Description"
         android:padding="12dp"
+        android:textColorHint="@color/yellowish"
         app:layout_constraintBottom_toTopOf="@+id/saveButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.533"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="40dp"
-        android:backgroundTint="@color/primary_dark"
+        android:backgroundTint="@color/yellowish"
+        android:fontFamily="@font/chango"
         android:text="Save"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/amountInput"
         android:layout_width="178dp"
         android:layout_height="48dp"
         android:layout_marginTop="48dp"
-        android:background="@drawable/button_white"
+        android:background="@drawable/rounded_edittext"
+        android:fontFamily="@font/chango"
         android:hint="Amount"
         android:inputType="numberDecimal"
         android:padding="12dp"
+        android:textColorHint="@color/yellowish"
+        app:layout_constraintBottom_toTopOf="@+id/descriptionInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frameLayout2" />
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout2"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -123,11 +171,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        app:itemIconTint="@color/primary_blue"
-        app:itemTextColor="@color/primary_blue"
+        android:background="@drawable/background_gradient"
+        app:itemIconTint="@color/yellowish"
+        app:itemTextColor="@color/yellowish"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
 

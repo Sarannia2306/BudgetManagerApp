@@ -16,49 +16,34 @@
         android:background="@drawable/home_bg">
 
         <TextView
-            android:id="@+id/username_text"
-            android:layout_width="143dp"
-            android:layout_height="41dp"
-            android:text=","
-            android:textColor="@android:color/white"
-            android:textSize="28sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.675"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/greeting_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="198dp"
-            android:fontFamily="monospace"
-            android:text="Welcome"
-            android:textColor="@android:color/white"
-            android:textSize="36dp"
+            android:layout_width="242dp"
+            android:layout_height="146dp"
+            android:fontFamily="@font/bungee_shade"
+            android:text="Welcome
+ to
+             CoinCahce"
+            android:textColor="@color/yellowish"
+            android:textSize="34sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.111"
+            app:layout_constraintHorizontal_bias="0.101"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image"
-            app:layout_constraintVertical_bias="0.257" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.308" />
 
         <ImageView
-            android:id="@+id/profile_image"
-            android:layout_width="38dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="13dp"
-            android:background="@drawable/profile_img_bg"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile"
-            app:layout_constraintBottom_toTopOf="@+id/greeting_text"
+            android:id="@+id/imageView3"
+            android:layout_width="137dp"
+            android:layout_height="156dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.957"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.264"
+            app:srcCompat="@drawable/logo_budget" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -83,13 +68,14 @@
 
             <TextView
                 android:id="@+id/add_transaction_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-smallcaps"
+                android:layout_width="353dp"
+                android:layout_height="57dp"
+                android:fontFamily="@font/chango"
                 android:text="Add your
                 transaction here"
-                android:textColor="@android:color/white"
-                android:textSize="30sp"
+                android:textAlignment="viewStart"
+                android:textColor="@color/yellowish"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -97,14 +83,17 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/add_transaction_arrow"
-                android:layout_width="37dp"
-                android:layout_height="37dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="28dp"
-                android:src="@drawable/arrow_home"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/imageView4"
+                android:layout_width="77dp"
+                android:layout_height="55dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/add_transaction_text"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/add_transaction_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.355"
+                app:srcCompat="@drawable/arrow_icon" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -112,14 +101,12 @@
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginBottom="0dp"
-        android:background="@android:color/white"
-        app:itemIconTint="@color/primary_blue"
-        app:itemTextColor="@color/primary_blue"
+        android:background="@drawable/gradient_bg"
+        app:itemIconTint="@color/yellowish"
+        app:itemTextColor="@color/yellowish"
         app:menu="@menu/bottom_navigation_menu" />
+
 
     <androidx.cardview.widget.CardView
         android:id="@+id/balance_card"
@@ -135,36 +122,42 @@
 
         <!-- Total Balance Label and Amount -->
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp">
 
             <TextView
                 android:id="@+id/balance_label"
-                android:layout_width="302dp"
-                android:layout_height="71dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:fontFamily="serif-monospace"
-                android:text="Your total balance"
-                android:textColor="@android:color/holo_blue_dark"
-                android:textSize="26sp"
+                android:layout_width="306dp"
+                android:layout_height="74dp"
+                android:fontFamily="@font/chango"
+                android:text="Your total balance:"
+                android:textAlignment="center"
+                android:textColor="@color/yellowish"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.728"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.125" />
 
             <TextView
                 android:id="@+id/balance_amount"
                 android:layout_width="252dp"
                 android:layout_height="58dp"
                 android:layout_marginTop="16dp"
-                android:fontFamily="serif-monospace"
+                android:fontFamily="@font/bungee_shade"
                 android:text="RM "
-                android:textColor="@android:color/holo_blue_dark"
+                android:textColor="@color/yellowish"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/balance_label" />
+                app:layout_constraintTop_toBottomOf="@id/balance_label"
+                app:layout_constraintVertical_bias="0.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
