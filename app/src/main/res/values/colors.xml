@@ -34,4 +34,9 @@
     <!-- Error/Alert Colors -->
     <color name="error_color">#B00020</color> <!-- Error Message Color -->
     <color name="success_color">#388E3C</color> <!-- Success Message Color -->
+
+    <color name="progress_30">#FFA500</color> <!-- Orange for 30% -->
+    <color name="progress_50">#FFFF00</color> <!-- Yellow for 50% -->
+    <color name="progress_100">#008000</color> <!-- Green for 100% -->
+
 </resources>

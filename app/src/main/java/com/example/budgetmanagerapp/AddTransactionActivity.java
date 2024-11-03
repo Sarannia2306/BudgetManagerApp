@@ -64,6 +64,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         categorySpinner = findViewById(R.id.categorySpinner);
         saveButton = findViewById(R.id.saveButton);
         ImageView calc_2 = findViewById(R.id.calc_2);
+        ImageView logoImageView = findViewById(R.id.logoImageView);
 
         // Save button click listener
         saveButton.setOnClickListener(v -> saveTransaction());
@@ -72,6 +73,12 @@ public class AddTransactionActivity extends AppCompatActivity {
         calc_2.setOnClickListener(v -> {
             Intent calculatorIntent = new Intent(AddTransactionActivity.this, CalculatorActivity.class);
             startActivity(calculatorIntent);
+        });
+
+        // ImageView click listener to navigate to HomePageActivity
+        logoImageView.setOnClickListener(v -> {
+            Intent homeIntent = new Intent(AddTransactionActivity.this, HomePageActivity.class);
+            startActivity(homeIntent);
         });
 
         // Set up BottomNavigationView for navigation
@@ -188,10 +195,10 @@ public class AddTransactionActivity extends AppCompatActivity {
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                // Navigate to HomePageActivity
-                Intent homeIntent = new Intent(AddTransactionActivity.this, HomePageActivity.class);
-                startActivity(homeIntent);
+            case R.id.nav_goals:
+                // Navigate to AddGoalActivity
+                Intent goalIntent = new Intent(AddTransactionActivity.this, AddGoalActivity.class);
+                startActivity(goalIntent);
                 return true;
             case R.id.nav_profile:
                 // Navigate to UserProfileActivity

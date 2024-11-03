@@ -25,6 +25,8 @@ public class ExpensesActivity extends AppCompatActivity {
     private TextView totalExpensesText;
     private LinearLayout transactionList;
     private DatabaseReference transactionDatabaseRef;
+    private DatabaseReference incomeDatabaseRef;
+    private DatabaseReference goalsDatabaseRef;
     private FirebaseAuth mAuth;
     private static final String TAG = "ExpensesActivity";
 
@@ -41,6 +43,8 @@ public class ExpensesActivity extends AppCompatActivity {
         if (currentUser != null) {
             String uid = currentUser.getUid();
             transactionDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Transactions");
+            incomeDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Income");
+            goalsDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Goals");
         } else {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
             finish();
@@ -59,8 +63,10 @@ public class ExpensesActivity extends AppCompatActivity {
         // Set up the calculator icon to open CalculatorActivity
         calc.setOnClickListener(v -> openCalculator());
 
-        // Fetch and display transaction data
+        // Fetch and display transaction, income, and goal data
         fetchTransactionData();
+        fetchIncomeData();
+        fetchGoalsData();
     }
 
     private void navigateToHomePage() {
@@ -81,36 +87,106 @@ public class ExpensesActivity extends AppCompatActivity {
                 double totalExpenses = 0.0;
                 transactionList.removeAllViews(); // Clear previous entries
 
-                // Iterate through each transaction
                 for (DataSnapshot transactionSnapshot : snapshot.getChildren()) {
                     String type = transactionSnapshot.child("type").getValue(String.class);
-                    String amount = transactionSnapshot.child("amount").getValue(String.class);
+                    String amountString = transactionSnapshot.child("amount").getValue(String.class);
                     String date = transactionSnapshot.child("date").getValue(String.class);
 
-                    // Calculate total expenses
-                    if (amount != null) {
-                        totalExpenses += Double.parseDouble(amount);
+                    double amount = 0.0;
+                    if (amountString != null) {
+                        try {
+                            amount = Double.parseDouble(amountString);
+                        } catch (NumberFormatException e) {
+                            Log.e(TAG, "Invalid amount format: " + amountString, e);
+                        }
+                    }
+
+                    // Calculate total expenses if type is "Expense"
+                    if (type != null && type.equalsIgnoreCase("Expense")) {
+                        totalExpenses += amount;
                     }
 
                     // Create and customize the TextView for each transaction
                     TextView transactionView = new TextView(ExpensesActivity.this);
-                    transactionView.setText(String.format("%s: RM %s on %s", type, amount, date));
+                    transactionView.setText(String.format("%s: RM %.2f on %s", type, amount, date));
                     transactionView.setTextColor(getResources().getColor(R.color.yellowish));
                     transactionView.setTextSize(18);
-                    transactionView.setPadding(0, 8, 0, 8); // Add padding for spacing
+                    transactionView.setPadding(2, 8, 2, 8); // Add padding for spacing
 
                     // Add the TextView to the LinearLayout
                     transactionList.addView(transactionView);
                 }
 
                 // Display the total expenses
-                totalExpensesText.setText("RM " + totalExpenses);
+                totalExpensesText.setText(String.format("RM %.2f", totalExpenses));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "Error fetching transactions", error.toException());
                 Toast.makeText(ExpensesActivity.this, "Failed to load expenses", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchIncomeData() {
+        incomeDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot incomeSnapshot : snapshot.getChildren()) {
+                    String type = incomeSnapshot.child("type").getValue(String.class);
+                    String amount = incomeSnapshot.child("amount").getValue(String.class);
+                    String date = incomeSnapshot.child("date").getValue(String.class);
+
+                    // Create and customize the TextView for each income
+                    TextView incomeView = new TextView(ExpensesActivity.this);
+                    incomeView.setText(String.format("%s: RM %s on %s", type, amount, date));
+                    incomeView.setTextColor(getResources().getColor(R.color.primary_dark));
+                    incomeView.setTextSize(18);
+                    incomeView.setPadding(2, 8, 2, 8);
+
+                    // Add the TextView to the LinearLayout
+                    transactionList.addView(incomeView);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error fetching income", error.toException());
+                Toast.makeText(ExpensesActivity.this, "Failed to load income", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void fetchGoalsData() {
+        goalsDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot goalSnapshot : snapshot.getChildren()) {
+                    String goalName = goalSnapshot.child("goalName").getValue(String.class);
+                    Double savedAmount = goalSnapshot.child("savedAmount").getValue(Double.class);
+                    Double targetAmount = goalSnapshot.child("targetAmount").getValue(Double.class);
+                    String deadline = goalSnapshot.child("deadline").getValue(String.class);
+
+                    // Check for null values to avoid exceptions
+                    if (goalName != null && savedAmount != null && targetAmount != null && deadline != null) {
+                        // Create and customize the TextView for each goal
+                        TextView goalView = new TextView(ExpensesActivity.this);
+                        goalView.setText(String.format("%s: Saved RM %.2f of RM %.2f, Deadline: %s", goalName, savedAmount, targetAmount, deadline));
+                        goalView.setTextColor(getResources().getColor(R.color.background_dark));
+                        goalView.setTextSize(18);
+                        goalView.setPadding(2, 8, 2, 8);
+
+                        // Add the TextView to the LinearLayout
+                        transactionList.addView(goalView);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Error fetching goals", error.toException());
+                Toast.makeText(ExpensesActivity.this, "Failed to load goals", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -31,7 +31,7 @@ public class HomePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_homepage);
 
         balanceAmount = findViewById(R.id.balance_amount);
-        ImageView arrowIcon = findViewById(R.id.imageView4); // Reference the arrow icon ImageView
+        ImageView arrowIcon = findViewById(R.id.imageView4);
 
         // Set up OnClickListener for the arrow icon
         arrowIcon.setOnClickListener(v -> {
@@ -39,9 +39,15 @@ public class HomePageActivity extends AppCompatActivity {
             startActivity(addTransactionIntent);
         });
 
+        // Goals Overview CardView OnClickListener
+        findViewById(R.id.goals_overview_card).setOnClickListener(v -> {
+            Intent goalsOverviewIntent = new Intent(HomePageActivity.this, GoalsOverviewActivity.class);
+            startActivity(goalsOverviewIntent);
+        });
+
         // Initialize bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setOnNavigationItemSelectedListener(item -> onNavigationItemSelected(item));
+        bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
         fetchBalance();
     }
@@ -63,11 +69,9 @@ public class HomePageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     Object balanceValue = snapshot.getValue();
-                    if (balanceValue instanceof Long || balanceValue instanceof Double) {
+                    if (balanceValue instanceof Number) {
                         double balance = ((Number) balanceValue).doubleValue();
                         balanceAmount.setText(String.format("RM %.2f", balance));
-                    } else if (balanceValue instanceof String) {
-                        balanceAmount.setText("RM " + balanceValue);
                     } else {
                         balanceAmount.setText("RM 0.00");
                         Log.w(TAG, "Unexpected data type for balance");
@@ -88,17 +92,15 @@ public class HomePageActivity extends AppCompatActivity {
 
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                // Stay on the HomePageActivity
+            case R.id.nav_goals:
+                startActivity(new Intent(this, AddGoalActivity.class));
+                finish();
                 return true;
             case R.id.nav_profile:
-                // Navigate to UserProfileActivity
-                Intent profileIntent = new Intent(HomePageActivity.this, UserProfileActivity.class);
-                startActivity(profileIntent);
+                startActivity(new Intent(this, UserProfileActivity.class));
                 return true;
             case R.id.nav_transactions:
-                Intent transactionIntent = new Intent(HomePageActivity.this, ExpensesActivity.class);
-                startActivity(transactionIntent);
+                startActivity(new Intent(this, ExpensesActivity.class));
                 return true;
             default:
                 return false;

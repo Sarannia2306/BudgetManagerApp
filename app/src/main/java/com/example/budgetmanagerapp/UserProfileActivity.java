@@ -45,7 +45,6 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
-        // Initialize Firebase Auth and Database reference
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -56,22 +55,23 @@ public class UserProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI components
         firstNameDisplay = findViewById(R.id.firstName);
         lastNameDisplay = findViewById(R.id.lastName);
         dobDisplay = findViewById(R.id.dob);
         emailDisplay = findViewById(R.id.email);
         profileImage = findViewById(R.id.profileImage);
         signOutButton = findViewById(R.id.signOutButton);
+        ImageView logoImageView = findViewById(R.id.logoImageView);
 
-        // Fetch and display user profile details
         fetchUserProfile();
 
-        // Set up BottomNavigationView for navigation
+        logoImageView.setOnClickListener(v -> {
+            startActivity(new Intent(UserProfileActivity.this, HomePageActivity.class));
+        });
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
-        // Set up sign-out functionality
         signOutButton.setOnClickListener(v -> signOutUser());
     }
 
@@ -80,23 +80,16 @@ public class UserProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    String firstName = snapshot.child("firstName").getValue(String.class);
-                    String lastName = snapshot.child("lastName").getValue(String.class);
-                    String dob = snapshot.child("dob").getValue(String.class);
-                    String email = snapshot.child("email").getValue(String.class);
+                    firstNameDisplay.setText(snapshot.child("firstName").getValue(String.class));
+                    lastNameDisplay.setText(snapshot.child("lastName").getValue(String.class));
+                    dobDisplay.setText(snapshot.child("dob").getValue(String.class));
+                    emailDisplay.setText(snapshot.child("email").getValue(String.class));
                     String imageUrl = snapshot.child("imageUrl").getValue(String.class);
 
-                    // Display retrieved data
-                    firstNameDisplay.setText(firstName);
-                    lastNameDisplay.setText(lastName);
-                    dobDisplay.setText(dob);
-                    emailDisplay.setText(email);
-
-                    // Load profile image from URL
                     if (imageUrl != null && !imageUrl.isEmpty()) {
                         new ImageLoadTask(imageUrl, profileImage).execute();
                     } else {
-                        profileImage.setImageResource(R.drawable.baseline_photo); // Default image if no URL
+                        profileImage.setImageResource(R.drawable.baseline_photo);
                     }
                 } else {
                     Toast.makeText(UserProfileActivity.this, "Profile not found", Toast.LENGTH_SHORT).show();
@@ -113,27 +106,20 @@ public class UserProfileActivity extends AppCompatActivity {
 
     private void signOutUser() {
         mAuth.signOut();
-        Intent intent = new Intent(UserProfileActivity.this, LoginActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, LoginActivity.class));
         finish();
     }
 
-    // Navigation item selection handler
     private boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.nav_home:
-                // Navigate to HomePageActivity
-                Intent homeIntent = new Intent(UserProfileActivity.this, HomePageActivity.class);
-                startActivity(homeIntent);
+            case R.id.nav_goals:
+                startActivity(new Intent(this, AddGoalActivity.class));
                 finish();
                 return true;
             case R.id.nav_profile:
-                // Stay on UserProfileActivity
                 return true;
             case R.id.nav_transactions:
-                // Navigate to ExpensesActivity
-                Intent transactionIntent = new Intent(UserProfileActivity.this, ExpensesActivity.class);
-                startActivity(transactionIntent);
+                startActivity(new Intent(this, ExpensesActivity.class));
                 finish();
                 return true;
             default:
@@ -141,7 +127,6 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
-    // AsyncTask to load the image from the URL in the background
     private static class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
         private String url;
         private ImageView imageView;
@@ -169,19 +154,17 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                imageView.setImageBitmap(getCircularBitmap(bitmap)); // Set circular bitmap
+                imageView.setImageBitmap(getCircularBitmap(bitmap));
             } else {
-                imageView.setImageResource(R.drawable.baseline_photo); // Default image if loading fails
+                imageView.setImageResource(R.drawable.baseline_photo);
             }
         }
 
-        // Method to create a circular bitmap
         private Bitmap getCircularBitmap(Bitmap bitmap) {
             Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
             final Paint paint = new Paint();
             final Path path = new Path();
-            final int color = 0xff424242; // Background color for the circular image
             paint.setAntiAlias(true);
             path.addCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, Math.min(bitmap.getWidth(), bitmap.getHeight()) / 2, Path.Direction.CCW);
             canvas.clipPath(path);

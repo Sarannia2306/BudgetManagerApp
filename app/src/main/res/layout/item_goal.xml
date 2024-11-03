@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginVertical="8dp"
+    android:background="@drawable/rounded_edittext"
+    android:padding="12dp">
+
+    <!-- Goal Name -->
+    <TextView
+        android:id="@+id/goalNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/chango"
+        android:text="Goal Name"
+        android:textColor="@color/yellowish"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/targetAmountTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Target Amount -->
+    <TextView
+        android:id="@+id/targetAmountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/chango"
+        android:text="RM0.00"
+        android:textColor="@color/yellowish"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Saved Amount -->
+    <TextView
+        android:id="@+id/savedAmountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/chango"
+        android:text="Saved: RM0.00"
+        android:textColor="@color/yellowish"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/targetAmountTextView" />
+
+    <!-- Deadline -->
+    <TextView
+        android:id="@+id/deadlineTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/chango"
+        android:text="Deadline: 01/01/2025"
+        android:textColor="@color/yellowish"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/goalNameTextView" />
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/chango"
+        android:text="Status: In Progress"
+        android:textColor="@color/yellowish"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deadlineTextView" />
+
+    <!-- Progress Representation -->
+    <LinearLayout
+        android:id="@+id/progressBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/statusTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <View
+            android:id="@+id/progress30"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:background="@color/progress_30"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/progress50"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:background="@color/progress_50"
+            android:layout_weight="1"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/progress100"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:background="@color/progress_100"
+            android:layout_weight="1"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <!-- Add Amount Button -->
+    <Button
+        android:id="@+id/addAmountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/yellowish"
+        android:fontFamily="@font/chango"
+        android:text="Add Amount"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBar" />
+</androidx.constraintlayout.widget.ConstraintLayout>
