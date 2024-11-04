@@ -22,8 +22,8 @@
         android:layout_width="136dp"
         android:layout_height="136dp"
         android:layout_marginTop="16dp"
-        android:contentDescription="Profile Image"
         android:background="@drawable/circular_background"
+        android:contentDescription="Profile Image"
         android:scaleType="centerCrop"
         android:src="@drawable/baseline_photo"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
@@ -174,10 +174,27 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/background_gradient"
-        app:layout_constraintVertical_bias="0.344" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="512dp"
+        android:backgroundTint="@color/yellowish"
+        android:fontFamily="@font/chango"
+        android:text="Update"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.149"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/background_gradient"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -202,7 +219,7 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/background_gradient"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.005"
         app:srcCompat="@drawable/logo_budget" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

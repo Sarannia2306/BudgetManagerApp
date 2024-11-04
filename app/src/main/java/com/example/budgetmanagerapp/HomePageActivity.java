@@ -32,6 +32,14 @@ public class HomePageActivity extends AppCompatActivity {
 
         balanceAmount = findViewById(R.id.balance_amount);
         ImageView arrowIcon = findViewById(R.id.imageView4);
+        ImageView reportIcon = findViewById(R.id.imageView);
+
+
+        reportIcon.setOnClickListener(v -> {
+            Intent reportIntent = new Intent(HomePageActivity.this, ReportActivity.class);
+            startActivity(reportIntent);
+        });
+
 
         // Set up OnClickListener for the arrow icon
         arrowIcon.setOnClickListener(v -> {

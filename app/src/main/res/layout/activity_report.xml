@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_gradient"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/report_title"
+        android:layout_width="173dp"
+        android:layout_height="68dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="118dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="120dp"
+        android:fontFamily="@font/bungee_shade"
+        android:text="Report"
+        android:textAlignment="center"
+        android:textColor="@color/yellowish"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="67dp"
+        android:layout_height="55dp"
+        android:layout_alignBottom="@+id/selectMonthButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="349dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="-5dp"
+        android:layout_marginBottom="67dp"
+        android:contextClickable="true"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.005"
+        app:srcCompat="@drawable/logo_budget" />
+
+
+    <Button
+        android:id="@+id/selectMonthButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/report_title"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
+        android:backgroundTint="@color/yellowish"
+        android:fontFamily="@font/chango"
+        android:text="Select Month" />
+
+    <Button
+        android:id="@+id/selectTypeButton"
+        android:layout_width="145dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="37dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="11dp"
+        android:layout_toStartOf="@+id/selectMonthButton"
+        android:backgroundTint="@color/yellowish"
+        android:fontFamily="@font/chango"
+        android:text="Type" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/selectMonthButton"
+        android:padding="16dp"/>
+
+</RelativeLayout>

@@ -91,6 +91,7 @@ public class ExpensesActivity extends AppCompatActivity {
                     String type = transactionSnapshot.child("type").getValue(String.class);
                     String amountString = transactionSnapshot.child("amount").getValue(String.class);
                     String date = transactionSnapshot.child("date").getValue(String.class);
+                    String description = transactionSnapshot.child("description").getValue(String.class); // Fetch description
 
                     double amount = 0.0;
                     if (amountString != null) {
@@ -108,7 +109,8 @@ public class ExpensesActivity extends AppCompatActivity {
 
                     // Create and customize the TextView for each transaction
                     TextView transactionView = new TextView(ExpensesActivity.this);
-                    transactionView.setText(String.format("%s: RM %.2f on %s", type, amount, date));
+                    transactionView.setText(String.format("%s: RM %.2f on %s%s", type, amount, date,
+                            description != null ? " - " + description : ""));
                     transactionView.setTextColor(getResources().getColor(R.color.yellowish));
                     transactionView.setTextSize(18);
                     transactionView.setPadding(2, 8, 2, 8); // Add padding for spacing

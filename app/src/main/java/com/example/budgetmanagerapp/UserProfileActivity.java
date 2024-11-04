@@ -3,16 +3,13 @@ package com.example.budgetmanagerapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,11 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -33,9 +27,9 @@ import java.net.URL;
 
 public class UserProfileActivity extends AppCompatActivity {
 
-    private TextView firstNameDisplay, lastNameDisplay, dobDisplay, emailDisplay;
+    private EditText firstNameInput, lastNameInput, dobInput, emailInput;
     private ImageView profileImage;
-    private Button signOutButton;
+    private Button signOutButton, updateButton;
     private FirebaseAuth mAuth;
     private DatabaseReference userDatabaseRef;
     private static final String TAG = "UserProfileActivity";
@@ -45,6 +39,7 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_profile);
 
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -55,52 +50,84 @@ public class UserProfileActivity extends AppCompatActivity {
             return;
         }
 
-        firstNameDisplay = findViewById(R.id.firstName);
-        lastNameDisplay = findViewById(R.id.lastName);
-        dobDisplay = findViewById(R.id.dob);
-        emailDisplay = findViewById(R.id.email);
+        // Initialize UI components
+        firstNameInput = findViewById(R.id.firstName);
+        lastNameInput = findViewById(R.id.lastName);
+        dobInput = findViewById(R.id.dob);
+        emailInput = findViewById(R.id.email);
         profileImage = findViewById(R.id.profileImage);
         signOutButton = findViewById(R.id.signOutButton);
+        updateButton = findViewById(R.id.updateButton);
         ImageView logoImageView = findViewById(R.id.logoImageView);
 
+        // Fetch and display user profile data
         fetchUserProfile();
 
+        // Logo click listener to navigate to HomePageActivity
         logoImageView.setOnClickListener(v -> {
             startActivity(new Intent(UserProfileActivity.this, HomePageActivity.class));
         });
 
+        // Bottom navigation setup
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
+        // Sign out button click listener
         signOutButton.setOnClickListener(v -> signOutUser());
+        // Update button click listener
+        updateButton.setOnClickListener(v -> updateUserProfile());
     }
 
     private void fetchUserProfile() {
-        userDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    firstNameDisplay.setText(snapshot.child("firstName").getValue(String.class));
-                    lastNameDisplay.setText(snapshot.child("lastName").getValue(String.class));
-                    dobDisplay.setText(snapshot.child("dob").getValue(String.class));
-                    emailDisplay.setText(snapshot.child("email").getValue(String.class));
-                    String imageUrl = snapshot.child("imageUrl").getValue(String.class);
+        userDatabaseRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                firstNameInput.setText(task.getResult().child("firstName").getValue(String.class));
+                lastNameInput.setText(task.getResult().child("lastName").getValue(String.class));
+                dobInput.setText(task.getResult().child("dob").getValue(String.class));
+                emailInput.setText(task.getResult().child("email").getValue(String.class));
+                String imageUrl = task.getResult().child("imageUrl").getValue(String.class);
 
-                    if (imageUrl != null && !imageUrl.isEmpty()) {
-                        new ImageLoadTask(imageUrl, profileImage).execute();
-                    } else {
-                        profileImage.setImageResource(R.drawable.baseline_photo);
-                    }
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    // Load the image asynchronously
+                    new ImageLoadTask(imageUrl, profileImage).execute();
                 } else {
-                    Toast.makeText(UserProfileActivity.this, "Profile not found", Toast.LENGTH_SHORT).show();
+                    profileImage.setImageResource(R.drawable.baseline_photo);
                 }
+            } else {
+                Toast.makeText(UserProfileActivity.this, "Profile not found", Toast.LENGTH_SHORT).show();
             }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error fetching profile data", e);
+            Toast.makeText(UserProfileActivity.this, "Failed to fetch profile data", Toast.LENGTH_SHORT).show();
+        });
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Error fetching profile data", error.toException());
-                Toast.makeText(UserProfileActivity.this, "Failed to fetch profile data", Toast.LENGTH_SHORT).show();
+    private void updateUserProfile() {
+        // Get updated values from the EditText fields
+        String updatedFirstName = firstNameInput.getText().toString().trim();
+        String updatedLastName = lastNameInput.getText().toString().trim();
+        String updatedDob = dobInput.getText().toString().trim();
+        String updatedEmail = emailInput.getText().toString().trim();
+
+        // Validate inputs
+        if (updatedFirstName.isEmpty() || updatedLastName.isEmpty() || updatedDob.isEmpty() || updatedEmail.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Update the profile data in Firebase
+        userDatabaseRef.child("firstName").setValue(updatedFirstName);
+        userDatabaseRef.child("lastName").setValue(updatedLastName);
+        userDatabaseRef.child("dob").setValue(updatedDob);
+        userDatabaseRef.child("email").setValue(updatedEmail).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Failed to update profile", Toast.LENGTH_SHORT).show();
             }
+        }).addOnFailureListener(e -> {
+            Log.e(TAG, "Error updating profile", e);
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -127,9 +154,10 @@ public class UserProfileActivity extends AppCompatActivity {
         }
     }
 
+    // Inner class for loading images asynchronously
     private static class ImageLoadTask extends AsyncTask<Void, Void, Bitmap> {
-        private String url;
-        private ImageView imageView;
+        private final String url;
+        private final ImageView imageView;
 
         public ImageLoadTask(String url, ImageView imageView) {
             this.url = url;
@@ -154,22 +182,10 @@ public class UserProfileActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             if (bitmap != null) {
-                imageView.setImageBitmap(getCircularBitmap(bitmap));
+                imageView.setImageBitmap(bitmap);
             } else {
                 imageView.setImageResource(R.drawable.baseline_photo);
             }
-        }
-
-        private Bitmap getCircularBitmap(Bitmap bitmap) {
-            Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(output);
-            final Paint paint = new Paint();
-            final Path path = new Path();
-            paint.setAntiAlias(true);
-            path.addCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, Math.min(bitmap.getWidth(), bitmap.getHeight()) / 2, Path.Direction.CCW);
-            canvas.clipPath(path);
-            canvas.drawBitmap(bitmap, 0, 0, paint);
-            return output;
         }
     }
 }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
@@ -101,10 +102,18 @@ public class AddGoalActivity extends AppCompatActivity {
 
     private void saveGoal() {
         String goalName = goalNameInput.getText().toString().trim();
-        double targetAmount = Double.parseDouble(targetAmountInput.getText().toString().trim());
-        double initialSaveAmount = Double.parseDouble(initialSaveInput.getText().toString().trim());
+        double targetAmount;
+        double initialSaveAmount;
         String deadline = deadlineInput.getText().toString().trim();
         String notes = notesInput.getText().toString().trim();
+
+        try {
+            targetAmount = Double.parseDouble(targetAmountInput.getText().toString().trim());
+            initialSaveAmount = Double.parseDouble(initialSaveInput.getText().toString().trim());
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Please enter valid amounts", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (goalName.isEmpty() || targetAmount <= 0 || deadline.isEmpty()) {
             Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
@@ -132,20 +141,27 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
     private void updateProgress(Goal goal) {
+        // Assume isGoalComplete is correctly implemented
         if (goal.isGoalComplete()) {
             sendGoalCompletionNotification(goal.getGoalName());
         }
     }
 
     private void sendGoalCompletionNotification(String goalName) {
+        Log.d("NotificationDebug", "Sending notification for goal: " + goalName);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.goal_completed)
+                .setSmallIcon(R.drawable.goal_completed) // Ensure this icon exists in your drawable folder
                 .setContentTitle("Congratulations!")
                 .setContentText("You completed your goal: " + goalName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(1, builder.build());
+        if (notificationManager != null) {
+            notificationManager.notify((int) System.currentTimeMillis(), builder.build());
+            Log.d("NotificationDebug", "Notification sent successfully");
+        } else {
+            Log.e("NotificationDebug", "NotificationManager is null");
+        }
     }
 
     private void createNotificationChannel() {

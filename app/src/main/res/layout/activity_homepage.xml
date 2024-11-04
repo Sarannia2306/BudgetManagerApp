@@ -30,6 +30,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.172" />
 
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="49dp"
+            android:layout_height="59dp"
+            android:layout_alignParentEnd="true"
+            android:contextClickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.997"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/report" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Add Transaction Card -->
