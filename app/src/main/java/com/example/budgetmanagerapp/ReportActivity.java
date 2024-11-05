@@ -4,10 +4,12 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.pdf.PdfDocument;
 import android.os.Bundle;
-import android.view.View;
+import android.os.Environment;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,39 +38,39 @@ import java.util.Locale;
 
 public class ReportActivity extends AppCompatActivity {
 
-    private RecyclerView transactionsRecyclerView; // RecyclerView to display transactions
-    private TransactionsAdapter transactionsAdapter; // Adapter for the RecyclerView
-    private List<Transaction> monthlyTransactions; // List to hold transactions for the selected month
-    private Button selectMonthButton; // Button to select month for the report
-    private Button selectTypeButton; // Button to select transaction type
-    private String selectedType = "All"; // Default type to show all transactions
+    private RecyclerView transactionsRecyclerView;
+    private TransactionsAdapter transactionsAdapter;
+    private List<Transaction> monthlyTransactions;
+    private Button selectMonthButton, selectTypeButton;
+    private ImageView logoImageView, generatePdfIcon;
+    private String selectedType = "All";
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_report); // Set the layout for this activity
+        setContentView(R.layout.activity_report);
 
         // Initialize RecyclerView and Adapter
         transactionsRecyclerView = findViewById(R.id.recycler_view);
-        transactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this)); // Set layout manager
-        monthlyTransactions = new ArrayList<>(); // Initialize the transactions list
-        transactionsAdapter = new TransactionsAdapter(monthlyTransactions); // Create the adapter
-        transactionsRecyclerView.setAdapter(transactionsAdapter); // Set the adapter to the RecyclerView
-        ImageView logoImageView = findViewById(R.id.logoImageView);
+        transactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        monthlyTransactions = new ArrayList<>();
+        transactionsAdapter = new TransactionsAdapter(monthlyTransactions);
+        transactionsRecyclerView.setAdapter(transactionsAdapter);
+
+        // Initialize views
+        logoImageView = findViewById(R.id.logoImageView);
+        selectMonthButton = findViewById(R.id.selectMonthButton);
+        selectTypeButton = findViewById(R.id.selectTypeButton);
+        generatePdfIcon = findViewById(R.id.pdf_icon);
 
         // Logo click listener to navigate to HomePageActivity
-        logoImageView.setOnClickListener(v -> {
-            startActivity(new Intent(ReportActivity.this, HomePageActivity.class));
-        });
+        logoImageView.setOnClickListener(v -> startActivity(new Intent(ReportActivity.this, HomePageActivity.class)));
 
-        // Initialize Select Month Button
-        selectMonthButton = findViewById(R.id.selectMonthButton);
-        selectMonthButton.setOnClickListener(v -> showMonthYearPicker()); // Set onClick listener to show date picker
-
-        // Initialize Select Type Button
-        selectTypeButton = findViewById(R.id.selectTypeButton);
-        selectTypeButton.setOnClickListener(v -> showTypeSelectionDialog()); // Set listener for type selection
+        // Set listeners for month, type, and PDF generation
+        selectMonthButton.setOnClickListener(v -> showMonthYearPicker());
+        selectTypeButton.setOnClickListener(v -> showTypeSelectionDialog());
+        generatePdfIcon.setOnClickListener(v -> generatePdfReport());
 
         // Load transactions for the current month by default
         Calendar today = Calendar.getInstance();
@@ -75,28 +80,22 @@ public class ReportActivity extends AppCompatActivity {
     private void showMonthYearPicker() {
         Calendar today = Calendar.getInstance();
         int year = today.get(Calendar.YEAR);
-        int month = today.get(Calendar.MONTH); // 0-indexed month
+        int month = today.get(Calendar.MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int dayOfMonth) {
-                        // Load transactions for the selected month
-                        loadMonthlyTransactions(selectedYear, selectedMonth + 1, selectedType);
-                    }
-                }, year, month, 1); // Show dialog starting from today
-
-        datePickerDialog.show(); // Display the date picker dialog
+                (view, selectedYear, selectedMonth, dayOfMonth) -> loadMonthlyTransactions(selectedYear, selectedMonth + 1, selectedType),
+                year, month, 1);
+        datePickerDialog.show();
     }
 
     private void showTypeSelectionDialog() {
-        String[] types = {"All", "Income", "Expenses"}; // Options for transaction types
+        String[] types = {"All", "Income", "Expenses"};
         new AlertDialog.Builder(this)
                 .setTitle("Select Transaction Type")
                 .setItems(types, (dialog, which) -> {
-                    selectedType = types[which]; // Set the selected type
+                    selectedType = types[which];
                     Calendar today = Calendar.getInstance();
-                    loadMonthlyTransactions(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, selectedType); // Reload transactions
+                    loadMonthlyTransactions(today.get(Calendar.YEAR), today.get(Calendar.MONTH) + 1, selectedType);
                 })
                 .show();
     }
@@ -105,62 +104,54 @@ public class ReportActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() == null) {
             Toast.makeText(ReportActivity.this, "User not authenticated.", Toast.LENGTH_SHORT).show();
-            return; // Exit if user is not authenticated
+            return;
         }
 
-        String uid = mAuth.getCurrentUser().getUid(); // Get the current user's ID
+        String uid = mAuth.getCurrentUser().getUid();
         DatabaseReference transactionsRef = FirebaseDatabase.getInstance().getReference("Users")
-                .child(uid).child("Transactions"); // Reference to the user's transactions in Firebase
+                .child(uid).child("Transactions");
 
         transactionsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                monthlyTransactions.clear(); // Clear previous transactions
-
+                monthlyTransactions.clear();
                 for (DataSnapshot transactionSnapshot : snapshot.getChildren()) {
-                    String dateStr = transactionSnapshot.child("date").getValue(String.class); // Get transaction date
+                    String dateStr = transactionSnapshot.child("date").getValue(String.class);
 
-                    // Ensure the date format matches your Firebase data
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     try {
-                        Date date = dateFormat.parse(dateStr); // Parse the date
-                        if (date == null) continue; // Skip if date parsing failed
+                        Date date = dateFormat.parse(dateStr);
+                        if (date == null) continue;
 
                         Calendar cal = Calendar.getInstance();
-                        cal.setTime(date); // Set the parsed date to the calendar
+                        cal.setTime(date);
 
-                        int transactionYear = cal.get(Calendar.YEAR); // Get the year of the transaction
-                        int transactionMonth = cal.get(Calendar.MONTH) + 1; // Get the month of the transaction
+                        int transactionYear = cal.get(Calendar.YEAR);
+                        int transactionMonth = cal.get(Calendar.MONTH) + 1;
 
-                        // Check if the transaction matches the selected year, month, and type
                         String type = transactionSnapshot.child("type").getValue(String.class);
                         boolean matchesType = typeFilter.equals("All") || typeFilter.equals(type);
 
-                        // Add the transaction if it matches the filters
                         if (transactionYear == selectedYear && transactionMonth == selectedMonth && matchesType) {
-                            String description = transactionSnapshot.child("description").getValue(String.class); // Get transaction description
-                            String category = transactionSnapshot.child("category").getValue(String.class); // Get transaction category
-                            String amountStr = transactionSnapshot.child("amount").getValue(String.class); // Get transaction amount
+                            String description = transactionSnapshot.child("description").getValue(String.class);
+                            String category = transactionSnapshot.child("category").getValue(String.class);
+                            String amountStr = transactionSnapshot.child("amount").getValue(String.class);
                             double amount = 0.0;
 
                             try {
-                                amount = Double.parseDouble(amountStr); // Parse the amount
+                                amount = Double.parseDouble(amountStr);
                             } catch (NumberFormatException e) {
-                                e.printStackTrace(); // Handle invalid amount format if necessary
+                                e.printStackTrace();
                             }
-
-                            // Add the transaction to the list
                             monthlyTransactions.add(new Transaction(dateStr, description, category, type, amount));
                         }
 
                     } catch (ParseException e) {
-                        e.printStackTrace(); // Handle parse exception if necessary
+                        e.printStackTrace();
                     }
                 }
 
-                transactionsAdapter.notifyDataSetChanged(); // Notify the adapter that the data has changed
-
-                // Show message if no transactions were found for the selected month
+                transactionsAdapter.notifyDataSetChanged();
                 if (monthlyTransactions.isEmpty()) {
                     Toast.makeText(ReportActivity.this, "No transactions found for the selected month.", Toast.LENGTH_SHORT).show();
                 }
@@ -171,5 +162,64 @@ public class ReportActivity extends AppCompatActivity {
                 Toast.makeText(ReportActivity.this, "Failed to load transactions.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void generatePdfReport() {
+        PdfDocument pdfDocument = new PdfDocument();
+        Paint paint = new Paint();
+        int pageNumber = 1;
+
+        PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo.Builder(595, 842, pageNumber).create();
+        PdfDocument.Page page = pdfDocument.startPage(pageInfo);
+        Canvas canvas = page.getCanvas();
+
+        int yPosition = 50;
+        paint.setTextSize(18);
+        paint.setFakeBoldText(true);
+        canvas.drawText("Monthly Transactions Report", 50, yPosition, paint);
+
+        paint.setTextSize(12);
+        paint.setFakeBoldText(false);
+        yPosition += 40;
+        canvas.drawText("Date          Description       Category        Type        Amount", 50, yPosition, paint);
+
+        yPosition += 30;
+        paint.setTextSize(10);
+
+        for (Transaction transaction : monthlyTransactions) {
+            yPosition += 20;
+            String transactionLine = transaction.getDate() + "    " +
+                    transaction.getDescription() + "    " +
+                    transaction.getCategory() + "    " +
+                    transaction.getType() + "    " +
+                    transaction.getAmount();
+            canvas.drawText(transactionLine, 50, yPosition, paint);
+
+            if (yPosition > 750) {
+                pdfDocument.finishPage(page);
+                pageInfo = new PdfDocument.PageInfo.Builder(595, 842, ++pageNumber).create();
+                page = pdfDocument.startPage(pageInfo);
+                canvas = page.getCanvas();
+                yPosition = 50;
+            }
+        }
+
+        pdfDocument.finishPage(page);
+
+        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "BudgetReports");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        File file = new File(directory, "MonthlyTransactionsReport.pdf");
+        try {
+            pdfDocument.writeTo(new FileOutputStream(file));
+            Toast.makeText(this, "PDF Report generated and saved to " + file.getPath(), Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error generating PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        pdfDocument.close();
     }
 }
