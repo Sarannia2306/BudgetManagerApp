@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".AddTransactionActivity">
 
-    <!-- Header Section -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_width="0dp"
@@ -43,7 +42,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Logo Icon -->
         <ImageView
             android:id="@+id/logoImageView"
             android:layout_width="67dp"
@@ -55,7 +53,6 @@
             app:srcCompat="@drawable/logo_budget" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Amount and Date Input Fields -->
     <EditText
         android:id="@+id/amountInput"
         android:layout_width="0dp"
@@ -72,7 +69,6 @@
         app:layout_constraintEnd_toStartOf="@id/dateInput"
         app:layout_constraintHorizontal_chainStyle="spread" />
 
-    <!-- Date Input Field -->
     <EditText
         android:id="@+id/dateInput"
         android:layout_width="0dp"
@@ -89,7 +85,6 @@
         app:layout_constraintStart_toEndOf="@id/amountInput"
         app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
-    <!-- Type and Category Spinners -->
     <Spinner
         android:id="@+id/typeSpinner"
         android:layout_width="0dp"
@@ -116,7 +111,6 @@
         app:layout_constraintStart_toEndOf="@id/typeSpinner"
         app:layout_constraintTop_toBottomOf="@id/dateInput" />
 
-    <!-- Description Input Field -->
     <EditText
         android:id="@+id/descriptionInput"
         android:layout_width="0dp"
@@ -131,7 +125,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Save Button -->
     <Button
         android:id="@+id/saveButton"
         android:layout_width="200dp"
@@ -145,7 +138,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"

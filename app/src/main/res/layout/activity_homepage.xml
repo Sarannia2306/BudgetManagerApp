@@ -44,7 +44,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Add Transaction Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/add_transaction_card"
         android:layout_width="379dp"
@@ -94,7 +93,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Goals Overview Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/goals_overview_card"
         android:layout_width="379dp"
@@ -141,7 +139,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Bottom Navigation View -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
@@ -152,7 +149,6 @@
         app:itemTextColor="@color/yellowish"
         app:menu="@menu/bottom_navigation_menu" />
 
-    <!-- Balance Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/balance_card"
         android:layout_width="360dp"
@@ -164,7 +160,6 @@
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp">
 
-        <!-- Total Balance Label and Amount -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="354dp"
             android:layout_height="187dp"

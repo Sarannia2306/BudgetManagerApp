@@ -7,7 +7,6 @@
     android:background="@drawable/rounded_edittext"
     android:padding="12dp">
 
-    <!-- Goal Name -->
     <TextView
         android:id="@+id/goalNameTextView"
         android:layout_width="0dp"
@@ -20,7 +19,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Target Amount -->
     <TextView
         android:id="@+id/targetAmountTextView"
         android:layout_width="wrap_content"
@@ -31,7 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Saved Amount -->
     <TextView
         android:id="@+id/savedAmountTextView"
         android:layout_width="wrap_content"
@@ -42,7 +39,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/targetAmountTextView" />
 
-    <!-- Deadline -->
     <TextView
         android:id="@+id/deadlineTextView"
         android:layout_width="wrap_content"
@@ -53,7 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/goalNameTextView" />
 
-    <!-- Status -->
     <TextView
         android:id="@+id/statusTextView"
         android:layout_width="wrap_content"
@@ -64,7 +59,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deadlineTextView" />
 
-    <!-- Progress Representation -->
     <LinearLayout
         android:id="@+id/progressBar"
         android:layout_width="0dp"
@@ -99,7 +93,6 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Add Amount Button -->
     <Button
         android:id="@+id/addAmountButton"
         android:layout_width="wrap_content"
