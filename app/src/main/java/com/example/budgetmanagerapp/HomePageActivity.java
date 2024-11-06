@@ -33,6 +33,7 @@ public class HomePageActivity extends AppCompatActivity {
         balanceAmount = findViewById(R.id.balance_amount);
         ImageView arrowIcon = findViewById(R.id.imageView4);
         ImageView reportIcon = findViewById(R.id.imageView);
+        ImageView aboutIcon = findViewById(R.id.aboutUS);
 
 
         reportIcon.setOnClickListener(v -> {
@@ -40,8 +41,11 @@ public class HomePageActivity extends AppCompatActivity {
             startActivity(reportIntent);
         });
 
+        aboutIcon.setOnClickListener(v -> {
+            Intent aboutIntent = new Intent(HomePageActivity.this, AboutUsActivity.class);
+            startActivity(aboutIntent);
+        });
 
-        // Set up OnClickListener for the arrow icon
         arrowIcon.setOnClickListener(v -> {
             Intent addTransactionIntent = new Intent(HomePageActivity.this, AddTransactionActivity.class);
             startActivity(addTransactionIntent);
@@ -53,7 +57,6 @@ public class HomePageActivity extends AppCompatActivity {
             startActivity(goalsOverviewIntent);
         });
 
-        // Initialize bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
