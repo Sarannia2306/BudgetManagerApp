@@ -61,6 +61,10 @@
         <activity
             android:name=".ReportActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".AboutUsActivity"
+            android:exported="false" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
