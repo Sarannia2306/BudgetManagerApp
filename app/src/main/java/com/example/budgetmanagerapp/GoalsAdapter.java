@@ -35,7 +35,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
     @NonNull
     @Override
     public GoalViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the item layout for each goal
+
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_goal, parent, false);
         return new GoalViewHolder(view);
     }
@@ -81,8 +81,8 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
     // ViewHolder class to hold references to the views in each item
     public static class GoalViewHolder extends RecyclerView.ViewHolder {
         TextView goalNameTextView, targetAmountTextView, savedAmountTextView, deadlineTextView, statusTextView;
-        LinearLayout progressBar; // Change to LinearLayout to hold multiple progress views
-        Button addAmountButton; // Reference to the add amount button
+        LinearLayout progressBar;
+        Button addAmountButton;
 
         public GoalViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -91,12 +91,11 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             savedAmountTextView = itemView.findViewById(R.id.savedAmountTextView);
             deadlineTextView = itemView.findViewById(R.id.deadlineTextView);
             statusTextView = itemView.findViewById(R.id.statusTextView);
-            progressBar = itemView.findViewById(R.id.progressBar); // Initialize as LinearLayout
-            addAmountButton = itemView.findViewById(R.id.addAmountButton); // Initialize the button
+            progressBar = itemView.findViewById(R.id.progressBar);
+            addAmountButton = itemView.findViewById(R.id.addAmountButton);
         }
     }
 
-    // Method to show the dialog for adding more money to the goal
     private void showAddAmountDialog(Context context, Goal goal) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add Amount to Goal");
@@ -152,7 +151,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
                         // Check if the goal is complete and update status if necessary
                         if (goal.isGoalComplete()) {
                             goal.setStatus("Completed");
-                            updateGoalInFirebase(goal, context, 0); // Update goal status
+                            updateGoalInFirebase(goal, context, 0);
                         }
                     });
                 } else {

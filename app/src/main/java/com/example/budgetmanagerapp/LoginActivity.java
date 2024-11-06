@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
             // User is signed in, redirect to HomePageActivity
             Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
             startActivity(intent);
-            finish(); // Finish LoginActivity
+            finish();
         }
 
         emailInput = findViewById(R.id.emailInput);
@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
                 startActivity(intent);
-                finish(); // Finish LoginActivity
+                finish();
             } else {
                 Toast.makeText(LoginActivity.this, "Authentication failed. Please check your credentials.", Toast.LENGTH_SHORT).show();
             }

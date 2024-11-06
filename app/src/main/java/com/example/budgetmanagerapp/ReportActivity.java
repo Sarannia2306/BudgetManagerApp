@@ -51,23 +51,19 @@ public class ReportActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
 
-        // Initialize RecyclerView and Adapter
+
         transactionsRecyclerView = findViewById(R.id.recycler_view);
         transactionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         monthlyTransactions = new ArrayList<>();
         transactionsAdapter = new TransactionsAdapter(monthlyTransactions);
         transactionsRecyclerView.setAdapter(transactionsAdapter);
-
-        // Initialize views
         logoImageView = findViewById(R.id.logoImageView);
         selectMonthButton = findViewById(R.id.selectMonthButton);
         selectTypeButton = findViewById(R.id.selectTypeButton);
         generatePdfIcon = findViewById(R.id.pdf_icon);
 
-        // Logo click listener to navigate to HomePageActivity
-        logoImageView.setOnClickListener(v -> startActivity(new Intent(ReportActivity.this, HomePageActivity.class)));
 
-        // Set listeners for month, type, and PDF generation
+        logoImageView.setOnClickListener(v -> startActivity(new Intent(ReportActivity.this, HomePageActivity.class)));
         selectMonthButton.setOnClickListener(v -> showMonthYearPicker());
         selectTypeButton.setOnClickListener(v -> showTypeSelectionDialog());
         generatePdfIcon.setOnClickListener(v -> generatePdfReport());
@@ -206,7 +202,7 @@ public class ReportActivity extends AppCompatActivity {
 
         pdfDocument.finishPage(page);
 
-        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "BudgetReports");
+    File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "BudgetReports");
         if (!directory.exists()) {
             directory.mkdirs();
         }

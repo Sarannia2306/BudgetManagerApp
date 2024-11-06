@@ -40,8 +40,7 @@ public class AddGoalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_goals);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+       mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser != null) {
@@ -55,7 +54,6 @@ public class AddGoalActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI elements
         goalNameInput = findViewById(R.id.goalNameInput);
         targetAmountInput = findViewById(R.id.targetAmountInput);
         deadlineInput = findViewById(R.id.deadlineInput);
@@ -76,7 +74,7 @@ public class AddGoalActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
-        createNotificationChannel(); // Create the notification channel
+        createNotificationChannel();
     }
 
     private void fetchCurrentBalance() {
@@ -141,7 +139,6 @@ public class AddGoalActivity extends AppCompatActivity {
     }
 
     private void updateProgress(Goal goal) {
-        // Assume isGoalComplete is correctly implemented
         if (goal.isGoalComplete()) {
             sendGoalCompletionNotification(goal.getGoalName());
         }
@@ -150,7 +147,7 @@ public class AddGoalActivity extends AppCompatActivity {
     private void sendGoalCompletionNotification(String goalName) {
         Log.d("NotificationDebug", "Sending notification for goal: " + goalName);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.goal_completed) // Ensure this icon exists in your drawable folder
+                .setSmallIcon(R.drawable.goal_completed)
                 .setContentTitle("Congratulations!")
                 .setContentText("You completed your goal: " + goalName)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);

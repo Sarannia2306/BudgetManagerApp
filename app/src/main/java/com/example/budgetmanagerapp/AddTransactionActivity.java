@@ -48,7 +48,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         // Check if user is authenticated
         if (currentUser != null) {
             String uid = currentUser.getUid();
-            // Change the reference to point to the user's Transactions node
+
             transactionDatabaseRef = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Transactions");
         } else {
             Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show();
@@ -56,7 +56,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI elements
         amountInput = findViewById(R.id.amountInput);
         dateInput = findViewById(R.id.dateInput);
         descriptionInput = findViewById(R.id.descriptionInput);
@@ -81,7 +80,6 @@ public class AddTransactionActivity extends AppCompatActivity {
             startActivity(homeIntent);
         });
 
-        // Set up BottomNavigationView for navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
 
@@ -93,7 +91,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         String amount = amountInput.getText().toString().trim();
         String date = dateInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
-        String type = typeSpinner.getSelectedItem().toString(); // Income or Expense
+        String type = typeSpinner.getSelectedItem().toString();
         String category = categorySpinner.getSelectedItem().toString();
 
         // Validate input
@@ -115,28 +113,27 @@ public class AddTransactionActivity extends AppCompatActivity {
         lastIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                int lastTransactionId = 0; // Default value
+                int lastTransactionId = 0;
                 if (snapshot.exists()) {
                     lastTransactionId = snapshot.getValue(Integer.class);
                 }
 
-                // Create new transaction ID
                 int newTransactionId = lastTransactionId + 1;
 
-                // Store transaction data in a map
+                // Store transaction data
                 Map<String, Object> transactionData = new HashMap<>();
-                transactionData.put("id", newTransactionId); // Store transaction ID
+                transactionData.put("id", newTransactionId);
                 transactionData.put("amount", amount);
                 transactionData.put("date", date);
                 transactionData.put("description", description);
                 transactionData.put("type", type);
                 transactionData.put("category", category);
 
-                // Save transaction data to Firebase under Users/uid/Transactions/newTransactionId
+                // Save transaction data to Firebase
                 DatabaseReference transactionRef = FirebaseDatabase.getInstance().getReference("Users").child(userId).child("Transactions").child(String.valueOf(newTransactionId));
                 transactionRef.setValue(transactionData)
                         .addOnSuccessListener(aVoid -> {
-                            // Update the lastTransactionId in the database
+
                             lastIdRef.setValue(newTransactionId)
                                     .addOnSuccessListener(aVoid1 -> Log.d("AddTransactionActivity", "Last transaction ID updated successfully"))
                                     .addOnFailureListener(e -> Log.e("AddTransactionActivity", "Failed to update last transaction ID: " + e.getMessage()));
@@ -145,16 +142,15 @@ public class AddTransactionActivity extends AppCompatActivity {
                             clearInputs();
                         })
                         .addOnFailureListener(e -> Toast.makeText(AddTransactionActivity.this, "Failed to add transaction: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            }
+                }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(AddTransactionActivity.this, "Failed to fetch last transaction ID", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(AddTransactionActivity.this, "Failed to fetch last transaction ID", Toast.LENGTH_SHORT).show();
+                    }
+            });
+        }
 
-    // Method to update the balance
     private void updateBalance(String type, double amount) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -214,19 +210,18 @@ public class AddTransactionActivity extends AppCompatActivity {
     }
 
     private void showDatePickerDialog() {
-        // Get the current date
+
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Create and show the DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            // Format the selected date
+
             String selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
-            dateInput.setText(selectedDate); // Set the selected date to the EditText
+            dateInput.setText(selectedDate);
         }, year, month, day);
 
-        datePickerDialog.show(); // Display the dialog
+        datePickerDialog.show();
     }
 }

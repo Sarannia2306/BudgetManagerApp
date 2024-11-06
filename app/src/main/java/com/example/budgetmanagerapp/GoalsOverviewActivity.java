@@ -39,7 +39,6 @@ public class GoalsOverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goals_overview);
 
-        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -53,7 +52,7 @@ public class GoalsOverviewActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI elements
+
         goalsRecyclerView = findViewById(R.id.goalsRecyclerView);
         goalsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         goalsList = new ArrayList<>();
@@ -61,7 +60,6 @@ public class GoalsOverviewActivity extends AppCompatActivity {
         goalsRecyclerView.setAdapter(goalsAdapter);
         ImageView logoImageView = findViewById(R.id.logoImageView);
 
-        // Fetch goals from Firebase
         fetchGoalsFromFirebase();
 
         // Logo ImageView click listener to navigate to HomePageActivity
@@ -70,7 +68,6 @@ public class GoalsOverviewActivity extends AppCompatActivity {
             startActivity(homeIntent);
         });
 
-        // Set up BottomNavigationView for navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
         bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
     }
@@ -79,14 +76,14 @@ public class GoalsOverviewActivity extends AppCompatActivity {
         goalsDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                goalsList.clear(); // Clear the list before adding updated data
+                goalsList.clear();
                 for (DataSnapshot goalSnapshot : snapshot.getChildren()) {
                     Goal goal = goalSnapshot.getValue(Goal.class);
                     if (goal != null) {
                         goalsList.add(goal);
                     }
                 }
-                goalsAdapter.notifyDataSetChanged(); // Notify the adapter of data changes
+                goalsAdapter.notifyDataSetChanged();
                 Log.d(TAG, "Goals data loaded successfully");
             }
 

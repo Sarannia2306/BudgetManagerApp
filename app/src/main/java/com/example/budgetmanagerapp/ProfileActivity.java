@@ -40,19 +40,18 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile); // Ensure you have this layout
+        setContentView(R.layout.activity_profile);
 
         // Initialize Firebase references
         database = FirebaseDatabase.getInstance().getReference("Users");
         storageReference = FirebaseStorage.getInstance().getReference("ProfileImages");
 
-        // Find UI components
         firstNameInput = findViewById(R.id.firstNameInput);
         lastNameInput = findViewById(R.id.lastNameInput);
         dobInput = findViewById(R.id.dobInput);
         profileImage = findViewById(R.id.profileImage);
         uploadImageBtn = findViewById(R.id.uploadImageBtn);
-        saveDetailsBtn = findViewById(R.id.saveProfileBtn); // New button for saving details
+        saveDetailsBtn = findViewById(R.id.saveProfileBtn);
 
         // Get userId from intent
         Intent intent = getIntent();
@@ -140,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
                         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                         String email = currentUser != null ? currentUser.getEmail() : "No Email";
 
-                        // Create UserProfile object with all user details
+
                         UserProfile userProfile = new UserProfile(userId, firstName, lastName, dob, email, imageUrl, 0.00);
                         Log.d(TAG, "UserProfile object created: " + userProfile.toString());
 

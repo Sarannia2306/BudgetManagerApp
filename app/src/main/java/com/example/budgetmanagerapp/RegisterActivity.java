@@ -25,16 +25,12 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
 
-        // Find UI components
+        mAuth = FirebaseAuth.getInstance();
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         confirmPasswordInput = findViewById(R.id.Re_password);
         signUpBtn = findViewById(R.id.signUpBtn);
-
-        // Set click listener for Sign Up button
         signUpBtn.setOnClickListener(view -> registerUser());
     }
 
@@ -43,11 +39,18 @@ public class RegisterActivity extends AppCompatActivity {
         String password = passwordInput.getText().toString().trim();
         String confirmPassword = confirmPasswordInput.getText().toString().trim();
 
-        // Validate input fields
+
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
+
+
+        if (password.length() < 8) {
+            Toast.makeText(this, "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!password.equals(confirmPassword)) {
             Toast.makeText(this, "Passwords do not match", Toast.LENGTH_SHORT).show();
             return;
@@ -63,14 +66,14 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.d(TAG, "User registered successfully: " + user.getUid());
                             Toast.makeText(RegisterActivity.this, "Registration successful!", Toast.LENGTH_SHORT).show();
 
-                            // Create intent and pass USER_ID to ProfileActivity
+                            // Intent to pass USER_ID to ProfileActivity
                             Intent intent = new Intent(RegisterActivity.this, ProfileActivity.class);
                             intent.putExtra("USER_ID", user.getUid());
                             startActivity(intent);
                             finish();
                         }
                     } else {
-                        // Registration failed, display error message
+                        // Registration failed
                         Log.e(TAG, "Registration failed: " + task.getException().getMessage());
                         Toast.makeText(RegisterActivity.this, "Registration failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }

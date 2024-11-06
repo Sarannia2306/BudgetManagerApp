@@ -35,7 +35,7 @@ public class ExpensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expenses);
 
-        // Initialize Firebase Auth
+
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
@@ -51,16 +51,13 @@ public class ExpensesActivity extends AppCompatActivity {
             return;
         }
 
-        // Initialize UI components
+
         totalExpensesText = findViewById(R.id.totalExpenses);
         transactionList = findViewById(R.id.transactionList);
         ImageView backBtn = findViewById(R.id.backBtn);
         ImageView calc = findViewById(R.id.calc_);
 
-        // Set up the back button to navigate to HomePageActivity
         backBtn.setOnClickListener(v -> navigateToHomePage());
-
-        // Set up the calculator icon to open CalculatorActivity
         calc.setOnClickListener(v -> openCalculator());
 
         // Fetch and display transaction, income, and goal data
@@ -85,13 +82,13 @@ public class ExpensesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 double totalExpenses = 0.0;
-                transactionList.removeAllViews(); // Clear previous entries
+                transactionList.removeAllViews();
 
                 for (DataSnapshot transactionSnapshot : snapshot.getChildren()) {
                     String type = transactionSnapshot.child("type").getValue(String.class);
                     String amountString = transactionSnapshot.child("amount").getValue(String.class);
                     String date = transactionSnapshot.child("date").getValue(String.class);
-                    String description = transactionSnapshot.child("description").getValue(String.class); // Fetch description
+                    String description = transactionSnapshot.child("description").getValue(String.class);
 
                     double amount = 0.0;
                     if (amountString != null) {
@@ -102,27 +99,22 @@ public class ExpensesActivity extends AppCompatActivity {
                         }
                     }
 
-                    // Calculate total expenses if type is "Expense"
                     if (type != null && type.equalsIgnoreCase("Expense")) {
                         totalExpenses += amount;
                     }
 
-                    // Create and customize the TextView for each transaction
                     TextView transactionView = new TextView(ExpensesActivity.this);
                     transactionView.setText(String.format("%s: RM %.2f on %s%s", type, amount, date,
                             description != null ? " - " + description : ""));
                     transactionView.setTextColor(getResources().getColor(R.color.yellowish));
                     transactionView.setTextSize(18);
-                    transactionView.setPadding(2, 8, 2, 8); // Add padding for spacing
-
+                    transactionView.setPadding(2, 8, 2, 8);
                     // Add the TextView to the LinearLayout
                     transactionList.addView(transactionView);
                 }
-
                 // Display the total expenses
                 totalExpensesText.setText(String.format("RM %.2f", totalExpenses));
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "Error fetching transactions", error.toException());
