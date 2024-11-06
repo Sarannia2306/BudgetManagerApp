@@ -68,7 +68,7 @@ public class GoalsAdapter extends RecyclerView.Adapter<GoalsAdapter.GoalViewHold
             progressBar.findViewById(R.id.progress100).setVisibility(View.VISIBLE);
         } else if (progress >= 50) {
             progressBar.findViewById(R.id.progress50).setVisibility(View.VISIBLE);
-        } else if (progress >= 30) {
+        } else if (progress >= 0) {
             progressBar.findViewById(R.id.progress30).setVisibility(View.VISIBLE);
         }
     }
